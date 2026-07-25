@@ -1,3 +1,5 @@
+local config = load(LoadResourceFile(GetCurrentResourceName(), "config/server.lua"))()
+
 local _dThread = false
 
 function StartDashboardThread()
@@ -9,12 +11,12 @@ function StartDashboardThread()
         Wait(5000)
         while true do
             local t = GlobalState.AdminPlayerHistory or {}
-            if #t >= 12 then
+            if #t >= config.Dashboard.maxSamples then
                 table.remove(t, 1)
             end
 
             table.insert(t, {
-                count = exports['pulsar-core']:FetchCount(),
+                count = plsr.Fetch:Count(),
                 time = os.time(),
             })
 

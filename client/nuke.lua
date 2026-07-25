@@ -1,76 +1,76 @@
 _awaitingNuke = false
 
 RegisterNetEvent("Admin:Client:NukeCountdown", function()
-    if not LocalPlayer.state.loggedIn then
+    if not plsr.State.flags.loggedIn then
         return
     end
 
     _awaitingNuke = true
 
     ShowNukeSprite()
-    exports["pulsar-sounds"]:PlayOne("nukeincome.ogg", 0.5)
+    plsr.Sounds.Play:One("nukeincome.ogg", 0.5)
 
     Wait(3000)
 
     for i = 1, 10 do
-        exports["pulsar-sounds"]:PlayOne("countbeep.ogg", 0.5)
+        plsr.Sounds.Play:One("countbeep.ogg", 0.5)
         Wait(2000)
     end
 end)
 
 RegisterNetEvent("Admin:Client:Nuke", function()
-    if not LocalPlayer.state.loggedIn then
+    if not plsr.State.flags.loggedIn then
         return
     end
 
-    exports["pulsar-sounds"]:PlayOne("nukeboom.ogg", 0.3)
+    plsr.Sounds.Play:One("nukeboom.ogg", 0.3)
 
     Wait(500)
 
     StartScreenEffect("PeyoteIn", 1000, false)
 
     SetCamEffect(1)
-    StartEntityFire(LocalPlayer.state.ped)
+    StartEntityFire(PlayerPedId())
 
-    local veh = GetVehiclePedIsIn(LocalPlayer.state.ped, false)
+    local veh = GetVehiclePedIsIn(PlayerPedId(), false)
 
-    if IsPedOnFoot(LocalPlayer.state.ped) then
-        SetPedToRagdoll(LocalPlayer.state.ped, 5000, 5000, 0, true, true, false)
+    if IsPedOnFoot(PlayerPedId()) then
+		SetPedToRagdoll(PlayerPedId(), 5000, 5000, 0, true, true, false)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(LocalPlayer.state.ped, 1, 0.00, 0.00, 5000.00, true, false, false, true)
-    elseif IsPedInAnyVehicle(LocalPlayer.state.ped) then
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
+		ApplyForceToEntityCenterOfMass(PlayerPedId(), 1, 0.00, 0.00, 5000.00, true, false, false, true)
+	elseif IsPedInAnyVehicle(PlayerPedId()) then
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, 10000.00, 10000.00, true, true, true, true)
         Wait(250)
-        ApplyForceToEntityCenterOfMass(veh, 1, 0.00, -10000.00, -10000.00, true, true, true, true)
-    end
+		ApplyForceToEntityCenterOfMass(veh, 1, 0.00, -10000.00, -10000.00, true, true, true, true)
+	end
 
     StopScreenEffect("PeyoteIn")
 
-    StartScreenEffect("Damage", 60000, false)
-    StartScreenEffect("RaceTurbo", 60000, false)
+	StartScreenEffect("Damage", 60000, false)
+	StartScreenEffect("RaceTurbo", 60000, false)
 
     Wait(60000)
 
     SetCamEffect(0)
-    StopAllScreenEffects()
+	StopAllScreenEffects()
 
     _awaitingNuke = false
 end)
@@ -80,10 +80,10 @@ local alpha = 255
 function ShowNukeSprite()
     CreateThread(function()
         RequestStreamedTextureDict("Biohazard", true)
-        while not HasStreamedTextureDictLoaded("Biohazard") do
-            RequestStreamedTextureDict("Biohazard", true)
-            Wait(10)
-        end
+		while not HasStreamedTextureDictLoaded("Biohazard") do
+			RequestStreamedTextureDict("Biohazard", true)
+		    Wait(10)
+		end
 
         local dir = true
 

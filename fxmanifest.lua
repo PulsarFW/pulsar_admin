@@ -1,39 +1,36 @@
-fx_version("cerulean")
-game("gta5")
-lua54("yes")
+fx_version 'cerulean'
+games { 'gta5' }
 
-version '1.0.8'
-repository 'https://www.github.com/PulsarFW/pulsar-admin'
+name 'Pulsar Admin'
+description 'Staff admin panel with live player list, moderation actions, and a management dashboard'
+author 'Artmines - maintained for Pulsar Framework'
+url 'https://pulsarframe.work'
+version 'v1.0.0'
 
-client_script("@pulsar-core/exports/cl_error.lua")
-client_script("@pulsar-pwnzor/client/check.lua")
-
--- shared_scripts {
---     'config/*.lua'
--- }
+client_script '@pulsar_core/components/cl_error.lua'
+shared_script '@pulsar_core/core/sh_pulsar.lua'
+client_script '@pulsar_pwnzor/client/check.lua'
 
 client_scripts({
-  "@ox_lib/init.lua",
-  "client/client.lua",
-  "client/attach.lua",
-  "client/noclip/*.lua",
-  -- 'client/menu.lua',
-  -- 'client/shitty_menu.lua',
-  "client/nui.lua",
-  "client/ids.lua",
-  "client/nuke.lua",
-  "client/damage_test.lua",
-  "client/doorlock.lua",
+	'client/client.lua',
+	'client/attach.lua',
+	'client/noclip/*.lua',
+	'client/nui.lua',
+	'client/doorpicker.lua',
+	'client/ids.lua',
+	'client/nuke.lua',
+	'client/damage_test.lua',
 })
 
 server_scripts({
-  "@oxmysql/lib/MySQL.lua",
-  "server/doorlock.lua",
-  "server/callbacks.lua",
-  "server/dashboard.lua",
-  "server/server.lua",
+	'server/*.lua',
 })
 
-ui_page("ui/dist/index.html")
+files({
+	'ui/dist/index.html',
+	'ui/dist/assets/*',
+	'config/shared.lua',
+})
 
-files({ "ui/dist/index.html", "ui/dist/*.js" })
+ui_page 'ui/dist/index.html'
+lua54 'yes'

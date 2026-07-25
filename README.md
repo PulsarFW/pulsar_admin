@@ -6,17 +6,27 @@
 
 # PULSAR-ADMIN
 
-### Staff administration panel and server management tools
+### Staff admin panel — live player list, moderation actions, and a management dashboard
 
 <br/>
 
 ![Lua](https://img.shields.io/badge/Lua_5.4-2C2D72?style=flat-square&logo=lua&logoColor=white)
 ![FiveM](https://img.shields.io/badge/FiveM-F40552?style=flat-square)
-![React](https://img.shields.io/badge/React_17-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=flat-square&logo=svelte&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-000000?style=flat-square&logo=bun&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariadb&logoColor=white)
 
 <br/>
 
-[Overview](#overview) · [UI Development](#ui-development) · [Dependencies](#dependencies)
+<sub>Enjoy the framework? A coffee helps keep active development, hardening, and support going.</sub>
+
+<a href="https://buymeacoffee.com/pulsarframework"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" /></a>
+
+<br/>
+
+[Overview](#overview) · [Theming](#theming) · [Dependencies](#dependencies)
 
 </div>
 
@@ -24,30 +34,28 @@
 
 ## Overview
 
-Staff administration panel for Pulsar Framework. Provides a full in-game dashboard for server management — player oversight, ban management, doorlock administration, noclip, nuke, damage testing, and a live server dashboard. Access is role-gated via pulsar-core.
+The staff panel. Player list, ban/kick, vehicle actions, character lookup, a dashboard — the usual admin toolkit, gated by permission level.
 
 ---
 
-## UI Development
+## Theming
 
-The NUI is a React 17 + Webpack app.
+Edit `ui/src/theme.css` for colors/fonts and `ui/src/config.ts` for nav links and permission gates, then rebuild:
 
-```bash
-cd ui
-npm install --legacy-peer-deps
-npm run start    # dev server with hot reload
-npm run build    # production build → ui/dist/
 ```
+cd ui
+bun install
+bun run build
+```
+
+Commit the rebuilt `ui/dist/` — that's what actually ships.
 
 ---
 
 ## Dependencies
 
-- `pulsar-core` — framework core, role access
-- `ox_lib` — utility library
-- `ox_inventory` — inventory access for admin actions
-- `oxmysql` — ban storage, dashboard data
-- `ox_doorlock` — doorlock administration
+- `pulsar_core` — framework core
+- `pulsar_pwnzor` — anti-cheat check loaded alongside every resource
 
 ---
 

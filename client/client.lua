@@ -1,53 +1,51 @@
-AddEventHandler('onClientResourceStart', function(resource)
-	if resource == GetCurrentResourceName() then
-		Wait(1000)
-		exports["pulsar-kbs"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
-			exports['pulsar-admin']:OpenMenu()
-		end)
+CreateThread(function()
+	plsr.Keybinds:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
+		plsr.Admin:OpenMenu()
+	end)
 
-		exports["pulsar-kbs"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
-			if LocalPlayer.state.isStaff then
-				exports["pulsar-core"]:ServerCallback("Admin:NoClip", {
-					active = not exports['pulsar-admin']:NoClipIsActive(),
-				}, function(isAdmin)
-					if isAdmin then
-						exports['pulsar-admin']:NoClipToggle()
-					end
-				end)
-			end
-		end)
+	plsr.Keybinds:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
+		if plsr.State.flags.isStaff then
+			plsr.Callbacks:ServerCallback("Admin:NoClip", {
+				active = not plsr.Admin.NoClip:IsActive(),
+			}, function(isAdmin)
+				if isAdmin then
+					plsr.Admin.NoClip:Toggle()
+				end
+			end)
+		end
+	end)
 
-		exports["pulsar-kbs"]:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
-			DoAdminVehicleAction("repair_engine")
-		end)
+	plsr.Keybinds:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
+		DoAdminVehicleAction("repair_engine")
+	end)
 
-		exports["pulsar-kbs"]:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
-			DoAdminVehicleAction("repair")
-		end)
+	plsr.Keybinds:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
+		DoAdminVehicleAction("repair")
+	end)
 
-		exports["pulsar-kbs"]:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
-			if LocalPlayer.state.isStaff then
-				ToggleAdminPlayerIDs()
-			end
-		end)
-	end
+	plsr.Keybinds:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
+		if plsr.State.flags.isStaff then
+			ToggleAdminPlayerIDs()
+		end
+	end)
 end)
 
-exports("OpenMenu", function()
-	OpenMenu()
-end)
+ADMIN = {
+	OpenMenu = function(self)
+		OpenMenu()
+	end,
+	CopyClipboard = function(self, txt)
+		CopyClipboard(txt)
+	end,
+}
 
-exports("CopyClipboard", function(txt)
-	CopyClipboard(txt)
-end)
-
-RegisterNetEvent("Admin:Client:CopyClipboard", function(data)
-	CopyClipboard(data)
+AddEventHandler("Proxy:Shared:RegisterReady", function()
+	exports["pulsar_core"]:RegisterComponent("Admin", ADMIN)
 end)
 
 RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
-	exports['pulsar-admin']:NoClipStop()
+	plsr.Admin.NoClip:Stop()
 	_drawingCoords = false
 end)
 
@@ -145,24 +143,24 @@ RegisterNetEvent("Admin:Client:ChangePed", function(model)
 end)
 
 function DoAdminVehicleAction(action)
-	local insideVehicle = GetVehiclePedIsIn(LocalPlayer.state.ped, false)
+	local insideVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
 	if
-		LocalPlayer.state.isDev
+		plsr.State.flags.isDev
 		and insideVehicle
 		and insideVehicle > 0
 		and DoesEntityExist(insideVehicle)
 		and NetworkHasControlOfEntity(insideVehicle)
 	then
-		exports["pulsar-core"]:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
+		plsr.Callbacks:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
 			if canDo then
 				if action == "repair" then
-					if exports['pulsar-vehicles']:RepairNormal(insideVehicle) then
+					if plsr.Vehicles.Repair:Normal(insideVehicle) then
 					end
 				elseif action == "repair_full" then
-					if exports['pulsar-vehicles']:RepairFull(insideVehicle) then
+					if plsr.Vehicles.Repair:Full(insideVehicle) then
 					end
 				elseif action == "repair_engine" then
-					if exports['pulsar-vehicles']:RepairEngine(insideVehicle) then
+					if plsr.Vehicles.Repair:Engine(insideVehicle) then
 					end
 				end
 			end

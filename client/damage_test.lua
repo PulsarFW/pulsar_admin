@@ -46,14 +46,13 @@ local function startWeaponTest(bone)
 			Wait(500)
 
 			if not HasEntityBeenDamagedByAnyPed(targetPed) and hitCount > 5 then
-				exports["pulsar-hud"]:Notification("info",
-					("Weapon didn't reach the target, distance: %s"):format(distance))
+				plsr.Notification:Info(("Weapon didn't reach the target, distance: %s"):format(distance))
 				print(("Weapon didn't reach the target, distance: %s"):format(distance))
 				return
 			end
 
 			if IsEntityDead(targetPed) then
-				exports["pulsar-hud"]:Notification("info",
+				plsr.Notification:Info(
 					("hitCount: %s | weaponDamage: %s | distance: %s"):format(hitCount, weaponDamage, distance)
 				)
 				print(("hitCount: %s | weaponDamage: %s | distance: %s"):format(hitCount, weaponDamage, distance))
@@ -76,16 +75,16 @@ local function cleanPeds()
 end
 
 RegisterNetEvent("Admin:Client:DamageTest", function(mode)
-	if LocalPlayer.state.isAdmin then
-		local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
+	if plsr.State.flags.isAdmin then
+		local isArmed, hash = GetCurrentPedWeapon(PlayerPedId())
 		if not isArmed then
-			exports["pulsar-hud"]:Notification("error", "You Don't Have A Weapon Equipped, Idiot")
+			plsr.Notification:Error("You Don't Have A Weapon Equipped, Idiot")
 			return
 		end
 
 		_running = true
 
-		LocalPlayer.state.wepTest = true
+		plsr.State.flags.wepTest = true
 
 		if #registeredPeds > 0 then
 			return cleanPeds()
@@ -118,21 +117,21 @@ RegisterNetEvent("Admin:Client:DamageTest", function(mode)
 		startWeaponTest(mode and `SKEL_Head` or 0)
 
 		_running = false
-		LocalPlayer.state.wepTest = false
+		plsr.State.flags.wepTest = false
 
-		SetEntityCoords(LocalPlayer.state.ped, startPos, false, false, false, true)
+		SetEntityCoords(PlayerPedId(), startPos, false, false, false, true)
 		startPos = nil
 	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
 	_loggedIn = true
-	LocalPlayer.state.wepTest = false
+	plsr.State.flags.wepTest = false
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	_loggedIn = false
 	_running = false
-	LocalPlayer.state.wepTest = false
+	plsr.State.flags.wepTest = false
 	cleanPeds()
 end)

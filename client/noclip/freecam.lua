@@ -1,5 +1,7 @@
 -- Some open source freecam resource but I can't find the source
 
+local config = load(LoadResourceFile(GetCurrentResourceName(), "config/shared.lua"))()
+
 local INPUT_SPRINT = 21
 local INPUT_CHARACTER_WHEEL = 19
 local INPUT_LOOK_LR = 1
@@ -21,19 +23,19 @@ local _internal_vecZ = nil
 
 local settings = {
     --Camera
-    fov = 45.0,
+    fov = config.Freecam.fov,
 
     -- Mouse
-    mouseSensitivityX = 5,
-    mouseSensitivityY = 5,
+    mouseSensitivityX = config.Freecam.mouseSensitivityX,
+    mouseSensitivityY = config.Freecam.mouseSensitivityY,
 
     -- Movement
-    normalMoveMultiplier = 1,
-    fastMoveMultiplier = 10,
-    slowMoveMultiplier = 0.1,
+    normalMoveMultiplier = config.Freecam.normalMoveMultiplier,
+    fastMoveMultiplier = config.Freecam.fastMoveMultiplier,
+    slowMoveMultiplier = config.Freecam.slowMoveMultiplier,
 
     -- On enable/disable
-    enableEasing = true,
+    enableEasing = config.Freecam.enableEasing,
     easingDuration = 1000
 }
 
@@ -108,9 +110,9 @@ end
 
 function GetFreecamMatrix()
     return _internal_vecX,
-        _internal_vecY,
-        _internal_vecZ,
-        _internal_pos
+            _internal_vecY,
+            _internal_vecZ,
+            _internal_pos
 end
 
 function GetFreecamTarget(distance)
@@ -167,9 +169,9 @@ local function CameraLoop()
         local rotY = 0.0
 
         -- Adjust position relative to camera rotation.
-        pos = pos + (vecX * moveAD * speedMultiplier)
+        pos = pos + (vecX *  moveAD * speedMultiplier)
         pos = pos + (vecY * -moveWS * speedMultiplier)
-        pos = pos + (vecZ * moveQZ * speedMultiplier)
+        pos = pos + (vecZ *  moveQZ * speedMultiplier)
 
         -- Adjust new rotation
         rot = vector3(rotX, rotY, rotZ)
@@ -268,7 +270,7 @@ function EulerToMatrix(rotX, rotY, rotZ)
 end
 
 -- When the resource is stopped, make sure to return the camera to the player.
-AddEventHandler('onResourceStop', function(resourceName)
+AddEventHandler('onResourceStop', function (resourceName)
     if resourceName == GetCurrentResourceName() then
         SetFreecamEnabled(false)
     end

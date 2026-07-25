@@ -9,19 +9,19 @@ local storedTargetData
 local _isInvis = false
 RegisterNetEvent('Admin:Client:Invisible', function()
     if _isInvis then
-        SetEntityVisible(LocalPlayer.state.ped, true)
-        exports["pulsar-hud"]:Notification("info", "Invisibility: Off")
+        SetEntityVisible(PlayerPedId(), true)
+        plsr.Notification:Info("Invisibility: Off")
         _isInvis = false
     else
-        SetEntityVisible(LocalPlayer.state.ped, false)
-        exports["pulsar-hud"]:Notification("info", "Invisibility: On")
+        SetEntityVisible(PlayerPedId(), false)
+        plsr.Notification:Info("Invisibility: On")
         _isInvis = true
     end
 end)
 
 AddEventHandler('Characters:Client:Logout', function()
     if _isInvis then
-        SetEntityVisible(LocalPlayer.state.ped, true)
+        SetEntityVisible(PlayerPedId(), true)
         _isInvis = false
     end
 
@@ -54,8 +54,7 @@ local function createScaleformThread()
 
         PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
         PushScaleformMovieFunctionParameterInt(1)
-        InstructionalButton(GetControlInstructionalButton(0, GetHashKey('+cancel_action') | 0x80000000, 1),
-            "Exit Spectate Mode")
+        InstructionalButton(GetControlInstructionalButton(0, GetHashKey('+cancel_action') | 0x80000000, 1), "Exit Spectate Mode")
         PopScaleformMovieFunctionVoid()
 
 
@@ -90,8 +89,8 @@ local function createGamerTagInfo()
     if not storedTargetData then return end
     local nameTag = ('%s %s (%s)'):format(storedTargetData?.First, storedTargetData?.Last, storedTargetData?.SID)
     storedGameTag = CreateFakeMpGamerTag(storedTargetPed, nameTag, false, false, '', 0, 0, 0, 0)
-    SetMpGamerTagVisibility(storedGameTag, 2, 1)    --set the visibility of component 2(healthArmour) to true
-    SetMpGamerTagAlpha(storedGameTag, 2, 255)       --set the alpha of component 2(healthArmour) to 255
+    SetMpGamerTagVisibility(storedGameTag, 2, 1)  --set the visibility of component 2(healthArmour) to true
+    SetMpGamerTagAlpha(storedGameTag, 2, 255) --set the alpha of component 2(healthArmour) to 255
     SetMpGamerTagHealthBarColor(storedGameTag, 129) --set component 2(healthArmour) color to 129(HUD_COLOUR_YOGA)
 
     SetMpGamerTagAlpha(targetTag, 4, 255)
@@ -143,11 +142,11 @@ local function toggleSpectate(targetPed, targetPlayerId)
         isSpectateEnabled = false
 
         if not lastSpectateLocation then
-            exports["pulsar-hud"]:Notification("error", 'Last location previous to spectate was not stored properly')
+            plsr.Notification:Error('Last location previous to spectate was not stored properly')
         end
 
         if not storedTargetPed then
-            exports["pulsar-hud"]:Notification("error", "Target ped was not stored to unspectate")
+            plsr.Notification:Error("Target ped was not stored to unspectate")
         end
 
         DoScreenFadeOut(500)
@@ -201,13 +200,13 @@ local function cleanupFailedResolve()
 
     DoScreenFadeIn(500)
 
-    exports["pulsar-hud"]:Notification("error", "Failed to Spectate")
+    plsr.Notification:Error("Failed to Spectate")
 end
 
 RegisterNetEvent('Admin:Client:Attach', function(tSource, tCoord, tData)
     if tSource and tCoord then
         CloseMenu()
-        lastSpectateLocation = GetEntityCoords(LocalPlayer.state.ped)
+        lastSpectateLocation = GetEntityCoords(PlayerPedId())
 
         local targetPlayerId = GetPlayerFromServerId(tSource)
         if targetPlayerId == PlayerId() then
@@ -218,7 +217,7 @@ RegisterNetEvent('Admin:Client:Attach', function(tSource, tCoord, tData)
         while not IsScreenFadedOut() do Wait(0) end
 
         local tpCoords = calculateSpectatorCoords(tCoord)
-        SetEntityCoords(LocalPlayer.state.ped, tpCoords.x, tpCoords.y, tpCoords.z, 0, 0, 0, false)
+        SetEntityCoords(PlayerPedId(), tpCoords.x, tpCoords.y, tpCoords.z, 0, 0, 0, false)
         preparePlayerForSpec(true)
 
         --- We need to wait to make sure that the player is actually available once we teleport
@@ -261,7 +260,7 @@ RegisterNetEvent('Admin:Client:Attach', function(tSource, tCoord, tData)
 end)
 
 AddEventHandler("Keybinds:Client:KeyDown:cancel_action", function()
-    if isSpectateEnabled then
+	if isSpectateEnabled then
         toggleSpectate(storedTargetPed)
         preparePlayerForSpec(false)
     end
@@ -276,8 +275,8 @@ function AdminStopAttach()
     if isSpectateEnabled then
         toggleSpectate(storedTargetPed)
         preparePlayerForSpec(false)
-        exports["pulsar-hud"]:Notification("info", "Detaching from Player")
+        plsr.Notification:Info("Detaching from Player")
     else
-        exports["pulsar-hud"]:Notification("info", "Not attached to anyone")
+        plsr.Notification:Info("Not attached to anyone")
     end
 end

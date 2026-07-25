@@ -1,8 +1,9 @@
+local config = load(LoadResourceFile(GetCurrentResourceName(), "config/shared.lua"))()
+
 local isPlayerIDActive = false
 local playerGamerTags = {}
 
--- Convar used to determine the distance in which player ID's are visible
-local distanceToCheck = 150
+local distanceToCheck = config.IdOverhead.range
 
 local gamerTagCompsEnum = {
     GamerName = 0,
@@ -35,8 +36,8 @@ end
 
 local function showGamerTags()
     local curCoords = GetEntityCoords(PlayerPedId())
-    if exports['pulsar-admin']:NoClipIsActive() then
-        curCoords = exports['pulsar-admin']:NoClipGetPos()
+    if plsr.Admin.NoClip:IsActive() then
+        curCoords = plsr.Admin.NoClip:GetPos()
     end
 
     -- Per infinity this will only return players within 300m
@@ -92,10 +93,10 @@ function ToggleAdminPlayerIDs()
     isPlayerIDActive = not isPlayerIDActive
     if not isPlayerIDActive then
         -- Remove all gamer tags and clear out active table
-        exports["pulsar-hud"]:Notification("info", "Player IDs Disabled")
+        plsr.Notification:Info("Player IDs Disabled")
         cleanUpGamerTags()
     else
-        exports["pulsar-hud"]:Notification("info", "Player IDs Enabled")
+        plsr.Notification:Info("Player IDs Enabled")
         CreateThread(function()
             while isPlayerIDActive do
                 showGamerTags()
