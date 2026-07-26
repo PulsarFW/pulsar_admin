@@ -75,10 +75,24 @@ export function handleAdminMessage(type: string, data: Record<string, unknown>) 
 		case 'PICKER_END':
 			adminState.pickerActive = false;
 			break;
-		// COPY is Lua-initiated (e.g. /cpcoords), the UI's own click-to-copy writes directly via the Clipboard API
-		case 'COPY':
-			navigator.clipboard.writeText((data.data as string) ?? '').catch(() => {});
+		// execCommand works unfocused (this fires from /cpcoords while the panel is hidden), unlike navigator.clipboard
+		case 'COPY': {
+			const text = (data.data as string) ?? '';
+			const textarea = document.createElement('textarea');
+			textarea.value = text;
+			textarea.style.position = 'fixed';
+			textarea.style.opacity = '0';
+			document.body.appendChild(textarea);
+			textarea.focus();
+			textarea.select();
+			try {
+				document.execCommand('copy');
+			} catch {
+				navigator.clipboard.writeText(text).catch(() => {});
+			}
+			document.body.removeChild(textarea);
 			break;
+		}
 	}
 }
 
